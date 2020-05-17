@@ -6,7 +6,7 @@ colorama==0.4.1
 cryptography==2.8
 decorator==4.4.2
 dj-database-url==0.5.0
-Django==2.2.5
+Django==2.2.10
 django-heroku==0.3.1
 future==0.18.2
 gunicorn==19.9.0
