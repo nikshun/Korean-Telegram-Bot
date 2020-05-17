@@ -1,6 +1,6 @@
 import logging, random
 import os
-# from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ( Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler)
 from random import randint
