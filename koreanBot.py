@@ -1,6 +1,5 @@
 import logging, random
 import os
-from PIL import Image
 from telegram import Chat,Bot,ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ( Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler)
