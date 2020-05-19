@@ -44,36 +44,47 @@ questions = [
 
 questionsOrder = list(range(len(questions)))
 
+def counter(update, context):
+    """Usage: /get uuid"""
+    try:
+        value = context.user_data["counter"]
+        update.message.reply_text(value)
+    except KeyError:
+        update.message.reply_text('No value stored in counter')
+
+
+
+
+
 
 def start(update, context):
+    # Use context.user_data["counter"] for counting
     random.shuffle(questionsOrder)
-    global counter
-    counter = 0
-    reply_keyboard = [str(counter)]
+    context.user_data["counter"] = 0
+    reply_keyboard = [str( context.user_data["counter"])]
     update.message.reply_text(str(len(questionsOrder)) + ' questions', reply_markup=ReplyKeyboardMarkup(reply_keyboard))
     # update.message.reply_text(os.path.abspath(__file__))
     return QUESTION
 
 def question(update, context):
-    global counter
-    temporaryAnswers = questions[questionsOrder[counter]][0]
+    temporaryAnswers = questions[questionsOrder[context.user_data["counter"]]][0]
     random.shuffle(temporaryAnswers)
     reply_keyboard = [[temporaryAnswers[0], temporaryAnswers[1]],[temporaryAnswers[2], temporaryAnswers[3]]]
-    fileName = "img/symbols/" + str(questions[questionsOrder[counter]][1])
+    fileName = "img/symbols/" + str(questions[questionsOrder[ context.user_data["counter"]]][1])
     context.bot.send_photo(chat_id = update.effective_user.id, photo = open(fileName, 'rb'),  reply_markup=ReplyKeyboardMarkup(reply_keyboard))
     return ANSWER
 
 def answer(update, context):
-    global counter
     reply = update.message.text
-    reply_keyboard = [str(counter+1)]
-    answer = questions[questionsOrder[counter]][1][0:-4]
+    reply_keyboard = [str( context.user_data["counter"]+1)]
+    answer = questions[questionsOrder[ context.user_data["counter"]]][1][0:-4]
     if reply == answer:
         update.message.reply_text('Correct', reply_markup=ReplyKeyboardMarkup(reply_keyboard))
     else:
         update.message.reply_text('Answer: ' + answer, reply_markup=ReplyKeyboardMarkup(reply_keyboard))
-    counter += 1
-    if counter == len(questions):
+    context.user_data["counter"] += 1
+
+    if  context.user_data["counter"] == len(questions):
         reply_keyboard = [["/start"],[]]
         update.message.reply_text('You have 0 right asnwers', reply_markup=ReplyKeyboardMarkup(reply_keyboard))
         return ConversationHandler.END
@@ -105,7 +116,8 @@ def main():
 
         fallbacks=[CommandHandler('cancel', cancel)]
     )
-    
+
+    dispatcher.add_handler(CommandHandler('counter', counter))
     dispatcher.add_handler(conv_handler)
     dispatcher.add_error_handler(error)
     updater.start_polling()
